@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link Encoder/Decoder</title>
+  <!-- Thêm Tailwind CSS qua CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Tùy chỉnh thêm cho nút copy và mở link */
+    .result-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-button, .open-button {
+      display: none; /* Ẩn mặc định */
+    }
+    .copy-button.active, .open-button.active {
+      display: inline-block; /* Hiển thị khi được kích hoạt */
+    }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-4 text-gray-800">Link Encoder/Decoder</h1>
+    
+    <!-- Input cho link -->
+    <input type="text" id="linkInput" placeholder="Nhập link (VD: https://example.com)" 
+           class="w-full p-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+    
+    <!-- Hai nút Mã hóa và Giải mã -->
+    <div class="flex justify-between mb-4">
+      <button id="encodeButton" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+        Mã hóa
+      </button>
+      <button id="decodeButton" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+        Giải mã
+      </button>
+    </div>
+    
+    <!-- Kết quả hiển thị -->
+    <div id="result" class="mt-4 p-2 bg-gray-50 rounded-lg">
+      <p id="resultText" class="text-gray-700 mb-2"></p>
+      <p id="resultAlert" class="text-gray-700 mb-2"></p>
+      <div class="result-container">
+        <button id="copyButton" class="copy-button bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600 transition">
+          Copy
+        </button>
+        <a id="openButton" href="#" target="_blank" 
+           class="open-button bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition">
+          Mở link
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Lấy các phần tử
+    const linkInput = document.getElementById('linkInput');
+    const encodeButton = document.getElementById('encodeButton');
+    const decodeButton = document.getElementById('decodeButton');
+    const resultText = document.getElementById('resultText');
+    const resultAlert = document.getElementById('resultAlert');
+    const copyButton = document.getElementById('copyButton');
+    const openButton = document.getElementById('openButton');
+
+    // Hàm mã hóa
+    function encodeLink(link) {
+      return link.replace(/\./g, '[.]');
+    }
+
+    // Hàm giải mã
+    function decodeLink(link) {
+      return link.replace(/\[\.\]/g, '.');
+    }
+
+    // Reset trạng thái nút
+    function resetButtons() {
+      copyButton.classList.remove('active');
+      openButton.classList.remove('active');
+      openButton.removeAttribute('href');
+    }
+    function setAlert(message) {
+      resultAlert.textContent = message;
+      setInterval(() => {
+        resultAlert.textContent = ''; // Xóa thông báo sau 3 giây
+      }, 3000);
+    }
+    // Xử lý sự kiện nhấn nút Mã hóa
+    encodeButton.addEventListener('click', () => {
+      const inputLink = linkInput.value.trim();
+      resetButtons();
+
+      if (inputLink) {
+        const encodedLink = encodeLink(inputLink);
+        resultText.textContent = `Kết quả mã hóa: ${encodedLink}`;
+        copyButton.classList.add('active'); // Hiển thị nút Copy
+        copyButton.onclick = () => {
+          navigator.clipboard.writeText(encodedLink).then(() => {
+            setAlert('Đã sao chép link mã hóa!');
+          }).catch(err => {
+            console.log('Lỗi khi sao chép: ' + err);
+          });
+        };
+      } else {
+        resultText.textContent = 'Vui lòng nhập link!';
+      }
+    });
+
+    // Xử lý sự kiện nhấn nút Giải mã
+    decodeButton.addEventListener('click', () => {
+      const inputLink = linkInput.value.trim();
+      resetButtons();
+
+      if (inputLink) {
+        const decodedLink = decodeLink(inputLink);
+        resultText.textContent = `Kết quả giải mã: ${decodedLink}`;
+        if (decodedLink.startsWith('http')) {
+          openButton.classList.add('active'); // Hiển thị nút Mở link
+          openButton.href = decodedLink;
+        } else {
+          resultText.textContent += ' (Link không hợp lệ để mở)';
+        }
+      } else {
+        resultText.textContent = 'Vui lòng nhập link!';
+      }
+    });
+
+  </script>
+</body>
+</html>
