@@ -7,6 +7,14 @@
   <!-- Thêm Tailwind CSS qua CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    .box-shadow-lg{
+        position: absolute;
+        top:100px;
+        max-width: 600px;
+    }
+    .result{
+        word-break: break-word; /* Ngắt từ khi cần thiết */
+    }
     /* Tùy chỉnh thêm cho nút copy và mở link */
     .result-container {
       display: flex;
@@ -22,7 +30,7 @@
   </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full box-shadow-lg">
     <h1 class="text-2xl font-bold text-center mb-4 text-gray-800">Link Encoder/Decoder</h1>
     
     <!-- Input cho link -->
@@ -40,7 +48,7 @@
     </div>
     
     <!-- Kết quả hiển thị -->
-    <div id="result" class="mt-4 p-2 bg-gray-50 rounded-lg">
+    <div id="result" class="mt-4 p-2 bg-gray-100 rounded-lg result">
       <p id="resultText" class="text-gray-700 mb-2"></p>
       <p id="resultAlert" class="text-gray-700 mb-2"></p>
       <div class="result-container">
